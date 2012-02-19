@@ -1,0 +1,14 @@
+public class Input {
+    public int i;
+    public long l;
+    public char c;
+
+    public int foo(int z) {
+        int a;
+        int b;
+        a = 3;
+        b = a * 2;
+        int c;
+        c = b.kill(a, b);
+    }
+}
