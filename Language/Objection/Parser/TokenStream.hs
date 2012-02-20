@@ -3,6 +3,7 @@ module Language.Objection.Parser.TokenStream
 where 
 
 import Control.Monad.Identity (Identity)
+import Data.Int
 import Text.Parsec hiding (token)
 import qualified Text.Parsec as P
 
@@ -66,7 +67,7 @@ intToken = basicToken f
     where f TInt = Just ()
           f _ = Nothing
 
-intLiteralToken :: (Stream s Identity (SourcePos, Token)) => Parsec s u Int
+intLiteralToken :: (Stream s Identity (SourcePos, Token)) => Parsec s u Int32
 intLiteralToken = basicToken f
     where f (TIntLiteral i) = Just i
           f _ = Nothing

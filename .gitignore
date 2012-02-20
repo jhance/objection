@@ -1,0 +1,4 @@
+/dist
+*.bc
+*.ll
+*.swp

@@ -8,6 +8,7 @@ where
 
 import Control.Applicative ((<$>), (*>), (<*))
 import Control.Monad.Identity (Identity)
+import Data.Int
 import Text.Parsec
 
 data Token = TAdd
@@ -19,7 +20,7 @@ data Token = TAdd
              | TEquals
              | TIdentifier String
              | TInt
-             | TIntLiteral Int
+             | TIntLiteral Int32
              | TLeftBrace
              | TLeftBracket
              | TLeftParen
@@ -54,7 +55,7 @@ charToken :: (Stream s m Char, Monad m)
              -> ParsecT s u m Token
 charToken c t = char c *> return t
 
-integerLiteralP :: (Stream s m Char, Monad m) => ParsecT s u m Int
+integerLiteralP :: (Stream s m Char, Monad m) => ParsecT s u m Int32
 integerLiteralP = read <$> try (many1 digit)
 
 identifierP :: (Stream s m Char, Monad m) => ParsecT s u m String

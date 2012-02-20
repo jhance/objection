@@ -1,6 +1,7 @@
 module Language.Objection.SyntaxTree
 where
 
+import Data.Int
 import qualified Data.Map as M
 
 type Identifier = String
@@ -40,10 +41,13 @@ data Statement = DeclareVariable Type Identifier
                  | StatementGroup [Statement]
                  deriving (Show, Read)
 
+-- | TODO: Change MethodCallExpression to take an Expression for the client
+-- object rather than an identifier.... Would be much better that way
+-- (and most people would rely on this behavior)
 data Expression = MathOperationExpression MathOperation Expression Expression
                   | MethodCallExpression Identifier Identifier [Expression]
                   | GetVariableExpression Identifier
-                  | IntLiteralExpression Int
+                  | IntLiteralExpression Int32
                   | ParenExpression Expression
                   deriving (Show, Read)
 
