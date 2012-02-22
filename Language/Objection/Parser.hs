@@ -156,9 +156,15 @@ table :: Stream s Identity (SourcePos, Token)
          => [[Operator s u Identity Expression]]
 table = [ [binaryMath multiplyToken Multiply, binaryMath divideToken Divide]
         , [binaryMath addToken Add, binaryMath subtractToken Subtract]
+        , [binaryCompare doubleEqualsToken CEquals,
+           binaryCompare greaterToken CGreater,
+           binaryCompare greaterEqualsToken CGreaterEquals,
+           binaryCompare lessToken CLess,
+           binaryCompare lessEqualsToken CLessEquals]
         ]
 
 binaryMath t o = Infix (t >> return (MathOperationExpression o)) AssocLeft
+binaryCompare t o = Infix (t >> return (ComparisonExpression o)) AssocLeft
 
 term :: Stream s Identity (SourcePos, Token) => Parsec s u Expression
 term = parenTerm

@@ -17,10 +17,15 @@ data Token = TAdd
              | TComma
              | TDivide
              | TDot
+             | TDoubleEquals
              | TEquals
+             | TG
+             | TGE
              | TIdentifier String
              | TInt
              | TIntLiteral Int32
+             | TL
+             | TLE
              | TLeftBrace
              | TLeftBracket
              | TLeftParen
@@ -72,8 +77,13 @@ tokenP = do pos <- getPosition
                    <|> charToken ',' TComma
                    <|> charToken '/' TDivide
                    <|> charToken '.' TDot
+                   <|> stringToken "==" TDoubleEquals
                    <|> charToken '=' TEquals
+                   <|> stringToken ">=" TGE
+                   <|> charToken '>' TG
                    <|> stringToken "int" TInt
+                   <|> stringToken "<=" TLE
+                   <|> charToken '<' TL
                    <|> charToken '{' TLeftBrace
                    <|> charToken '[' TLeftBracket
                    <|> charToken '(' TLeftParen

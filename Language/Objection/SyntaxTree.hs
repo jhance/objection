@@ -35,6 +35,7 @@ data Constructor = Constructor [Type] [Statement]
 
 data Statement = DeclareVariable Type Identifier
                  | DeclareSetVariable Identifier Expression
+                 | IfStatement Expression Statement (Maybe Statement)
                  | MethodCallStatement Identifier Identifier [Expression]
                  | Return Expression 
                  | SetVariable Identifier Expression
@@ -44,7 +45,8 @@ data Statement = DeclareVariable Type Identifier
 -- | TODO: Change MethodCallExpression to take an Expression for the client
 -- object rather than an identifier.... Would be much better that way
 -- (and most people would rely on this behavior)
-data Expression = MathOperationExpression MathOperation Expression Expression
+data Expression = ComparisonExpression ComparisonOperation Expression Expression
+                  | MathOperationExpression MathOperation Expression Expression
                   | MethodCallExpression Identifier Identifier [Expression]
                   | GetVariableExpression Identifier
                   | IntLiteralExpression Int32
@@ -53,3 +55,10 @@ data Expression = MathOperationExpression MathOperation Expression Expression
 
 data MathOperation = Add | Subtract | Multiply | Divide
                      deriving (Show, Read)
+
+data ComparisonOperation = CEquals 
+                           | CGreater
+                           | CGreaterEquals
+                           | CLess
+                           | CLessEquals
+                           deriving (Show, Read)

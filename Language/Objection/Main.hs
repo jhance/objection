@@ -21,13 +21,19 @@ sts = [DeclareVariable (TypePrimitive PrimitiveInt) "awesome",
        SetVariable "awesome2" (MathOperationExpression Multiply
                                 (GetVariableExpression "awesome")
                                 (IntLiteralExpression 2)
-                                )
+                                ),
+       DeclareVariable (TypePrimitive PrimitiveInt) "result",
+       IfStatement
+        (ComparisonExpression CLess (GetVariableExpression "awesome") (GetVariableExpression "awesome2"))
+        (SetVariable "result" (GetVariableExpression "awesome"))
+        (Just (SetVariable "result" (GetVariableExpression "awesome2"))),
+       Return (GetVariableExpression "awesome2")
        ]
 
 mTest :: CodeGenModule (Function (IO Int32))
 mTest = createFunction ExternalLinkage $ do
-    convertStatements M.empty sts
-    ret (valueOf 5 :: Value Int32)
+    let (CGInt32 code) = convertStatements M.empty RInt32 sts
+    code
 
 main :: IO ()
 main = do handle <- openFile "input.objection" ReadMode

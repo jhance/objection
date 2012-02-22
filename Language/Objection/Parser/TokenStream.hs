@@ -51,9 +51,24 @@ dotToken = basicToken f
     where f TDot = Just ()
           f _ = Nothing
 
+doubleEqualsToken :: (Stream s Identity (SourcePos, Token)) => Parsec s u ()
+doubleEqualsToken = basicToken f
+    where f TDoubleEquals = Just ()
+          f _ = Nothing
+
 equalsToken :: (Stream s Identity (SourcePos, Token)) => Parsec s u ()
 equalsToken = basicToken f
     where f TEquals = Just ()
+          f _ = Nothing
+
+greaterToken :: (Stream s Identity (SourcePos, Token)) => Parsec s u ()
+greaterToken = basicToken f
+    where f TG = Just ()
+          f _ = Nothing
+
+greaterEqualsToken :: (Stream s Identity (SourcePos, Token)) => Parsec s u ()
+greaterEqualsToken = basicToken f
+    where f TGE = Just ()
           f _ = Nothing
 
 identifierToken :: (Stream s Identity (SourcePos, Token))
@@ -70,6 +85,15 @@ intToken = basicToken f
 intLiteralToken :: (Stream s Identity (SourcePos, Token)) => Parsec s u Int32
 intLiteralToken = basicToken f
     where f (TIntLiteral i) = Just i
+          f _ = Nothing
+
+lessToken :: (Stream s Identity (SourcePos, Token)) => Parsec s u ()
+lessToken = basicToken f
+    where f TL = Just ()
+          f _ = Nothing
+lessEqualsToken :: (Stream s Identity (SourcePos, Token)) => Parsec s u ()
+lessEqualsToken = basicToken f
+    where f TLE = Just ()
           f _ = Nothing
 
 leftBraceToken :: (Stream s Identity (SourcePos, Token)) => Parsec s u ()
