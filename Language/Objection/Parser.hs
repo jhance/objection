@@ -75,9 +75,9 @@ collapseItems items = g ([], M.empty, M.empty) items
                 DMethod m@(Method i _ _ _ _) -> g (cs, fs, M.insert i m ms) xs
 
 typeP :: Stream s Identity (SourcePos, Token) => Parsec s u Type
-typeP = (intToken *> return (TypePrimitive PrimitiveInt))
-        <|> (longToken *> return (TypePrimitive PrimitiveLong))
-        <|> (charToken *> return (TypePrimitive PrimitiveChar))
+typeP = (intToken *> return (PrimitiveType PrimitiveInt))
+        <|> (longToken *> return (PrimitiveType PrimitiveLong))
+        <|> (charToken *> return (PrimitiveType PrimitiveChar))
         <|> (ClassType <$> identifierToken)
         <?> "Type"
 
@@ -168,7 +168,7 @@ binaryCompare t o = Infix (t >> return (ComparisonExpression o)) AssocLeft
 
 term :: Stream s Identity (SourcePos, Token) => Parsec s u Expression
 term = parenTerm
-       <|> (IntLiteralExpression <$> try intLiteralToken)
+       <|> (LiteralExpression . LiteralInt <$> try intLiteralToken)
        <|> try methodCall
        <|> (GetVariableExpression <$> identifierToken)
 

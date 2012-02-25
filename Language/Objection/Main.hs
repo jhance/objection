@@ -8,39 +8,37 @@ import qualified Data.Text.Lazy.IO as T
 import System.IO
 import Text.Parsec.Text.Lazy
 
-import LLVM.Core hiding (Module)
-import qualified LLVM.Core as L (Module)
+import LLVM.Untyped.Core
 
 import Language.Objection.CodeGen
 import Language.Objection.Parser
 import Language.Objection.SyntaxTree
 
-sts = [DeclareVariable (TypePrimitive PrimitiveInt) "awesome",
-       DeclareVariable (TypePrimitive PrimitiveInt) "awesome2",
-       SetVariable "awesome" (IntLiteralExpression 5),
+sts = [DeclareVariable (PrimitiveType PrimitiveInt) "awesome",
+       DeclareVariable (PrimitiveType PrimitiveInt) "awesome2",
+       SetVariable "awesome" (LiteralExpression (LiteralInt 5)),
        SetVariable "awesome2" (MathOperationExpression Multiply
                                 (GetVariableExpression "awesome")
-                                (IntLiteralExpression 2)
+                                (LiteralExpression (LiteralInt 5))
                                 ),
-       DeclareVariable (TypePrimitive PrimitiveInt) "result",
-       IfStatement
-        (ComparisonExpression CLess (GetVariableExpression "awesome") (GetVariableExpression "awesome2"))
-        (SetVariable "result" (GetVariableExpression "awesome"))
-        (Just (SetVariable "result" (GetVariableExpression "awesome2"))),
+       IfStatement (ComparisonExpression CGreater -- Minimum Function
+                    (GetVariableExpression "awesome")
+                    (GetVariableExpression "awesome2"))
+                   (SetVariable "awesome"
+                    (GetVariableExpression ("awesome2")))
+                   (Just (SetVariable "awesome2"
+                    (GetVariableExpression ("awesome")))),
        Return (GetVariableExpression "awesome2")
        ]
 
-mTest :: CodeGenModule (Function (IO Int32))
-mTest = createFunction ExternalLinkage $ do
-    let (CGInt32 code) = convertStatements M.empty RInt32 sts
-    code
-
-main :: IO ()
+main :: IO Bool
 main = do handle <- openFile "input.objection" ReadMode
           contents <- T.hGetContents handle
           print $ parseModule "input.objection" contents
 
-          initializeNativeTarget
-          m <- newNamedModule "main"
-          defineModule m mTest
-          writeBitcodeToFile "out.bc" m
+          mod <- runLLVM $ do
+                m <- moduleCreateWithName "main"
+                defineFunction m "testFunction" sts
+                return m
+
+          writeBitcodeToFile mod "out.bc"
