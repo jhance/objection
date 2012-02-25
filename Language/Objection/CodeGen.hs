@@ -161,9 +161,9 @@ genLiteral (LiteralFloat f) =
 genLiteral (LiteralDouble d) =
     (PrimitiveType PrimitiveDouble, constReal doubleType d)
 genLiteral (LiteralBool True) = 
-    (PrimitiveType PrimitiveBool, constReal int32Type 1)
+    (PrimitiveType PrimitiveBool, constReal int1Type 1)
 genLiteral (LiteralBool False) =
-    (PrimitiveType PrimitiveBool, constReal int32Type 0)
+    (PrimitiveType PrimitiveBool, constReal int1Type 0)
 
 isIntType :: Type -> Bool
 isIntType (PrimitiveType PrimitiveInt) = True
